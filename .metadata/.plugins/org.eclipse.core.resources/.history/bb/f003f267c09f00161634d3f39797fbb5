@@ -1,0 +1,49 @@
+import javax.swing.JFrame;
+import javax.swing.JTextField;
+import java.awt.BorderLayout;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.ActionEvent;
+
+public class Keystrokes extends JFrame implements KeyListener{
+	static JTextField textField;
+	static JLabel lblNewLabel;
+	
+	public Keystrokes() {
+
+		this.setSize(200, 200);
+		
+		textField = new JTextField();
+		textField.setBounds(10, 10, 80, 100);
+		textField.addKeyListener(this);
+		getContentPane().setLayout(null);
+		getContentPane().add(textField);
+		textField.setColumns(10);
+		
+		lblNewLabel = new JLabel("");
+		lblNewLabel.setBounds(100, 10, 80, 100);
+		getContentPane().add(lblNewLabel);
+	}
+	
+	@Override
+	public void keyPressed(KeyEvent arg0) {
+	}
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+		char code = arg0.getKeyChar();
+		if (code == '\b') {
+			lblNewLabel.setText();
+		}
+		lblNewLabel.setText(lblNewLabel.getText() + String.valueOf(code));
+	}
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+	}
+	public static void main(String [] args) {
+		Keystrokes k = new Keystrokes();
+		k.setVisible(true);
+	}
+}

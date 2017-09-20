@@ -1,0 +1,264 @@
+package application;
+
+import java.io.IOException;
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+
+public class SearchController {
+	@FXML
+	private ComboBox searchByComboBox;
+	@FXML
+	private TextField queryText;
+	@FXML
+	private AnchorPane main;
+
+	static ObservableList<Order> searchedOrderList = FXCollections.observableArrayList();
+	static ObservableList<Order> orderList = FXCollections.observableArrayList();
+	static ObservableList<String> searchByList = FXCollections.observableArrayList();
+	static ObservableList<String> whenList = FXCollections.observableArrayList();
+	static ObservableList<String> muchList = FXCollections.observableArrayList();
+	static ObservableList<String> tableList = FXCollections.observableArrayList();
+	static ObservableList<String> orderNumberList = FXCollections.observableArrayList();
+	static String searchByChoice;
+	static ComboBox choiceBox = new ComboBox();
+	static TextField choiceField = new TextField();
+	static ChangeListener choiceListener;
+
+	public void initiate() {
+		orderList = application.Main.orderList;
+		searchByList.addAll("Time", "Price", "Order Number", "Table Number");
+		searchByComboBox.getItems().addAll(searchByList);
+		searchByComboBox.getSelectionModel().selectFirst();
+		searchByChoice = (String) searchByComboBox.getSelectionModel().getSelectedItem();
+		whenList.addAll("Before", "After", "Between");
+		choiceBox.getItems().addAll(whenList);
+		choiceBox.getSelectionModel().selectFirst();
+		choiceBox.setLayoutX(25);
+		choiceBox.setLayoutY(60);
+		choiceField.setPromptText("HH:MM");
+		choiceField.setLayoutX(25);
+		choiceField.setLayoutY(95);
+		main.getChildren().addAll(choiceBox, choiceField);
+		choiceListener = new ChangeListener() {
+			@Override
+			public void changed(ObservableValue ov, Object t, Object t1) {
+				if (ov.getValue().equals("Between")) {
+					choiceField.setPromptText("(HH:MM and HH:MM)");
+				} else {
+					choiceField.setPromptText("(HH:MM)");
+				}
+			}
+		};
+		choiceBox.getSelectionModel().selectedItemProperty().addListener(choiceListener);
+
+		searchByComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+			@Override
+			public void changed(ObservableValue ov, Object t, Object t1) {
+				searchByChoice = (String) ov.getValue();
+				switch (searchByChoice) {
+				case "Time":
+					choiceBox.getSelectionModel().selectedItemProperty().removeListener(choiceListener);
+					main.getChildren().removeAll(choiceBox, choiceField);
+					whenList.clear();
+					whenList.addAll("Before", "After", "Between");
+					choiceBox.getItems().clear();
+					choiceBox.getItems().addAll(whenList);
+					choiceBox.getSelectionModel().selectFirst();
+					choiceBox.setLayoutX(25);
+					choiceBox.setLayoutY(60);
+					choiceField.setPromptText("Time (HH:MM)");
+					choiceField.setLayoutX(25);
+					choiceField.setLayoutY(95);
+					main.getChildren().addAll(choiceBox, choiceField);
+					choiceListener = new ChangeListener() {
+						@Override
+						public void changed(ObservableValue ov, Object t, Object t1) {
+							if (ov.getValue().equals("Between")) {
+								choiceField.setPromptText("(HH:MM and HH:MM)");
+							}
+						}
+					};
+					choiceBox.getSelectionModel().selectedItemProperty().addListener(choiceListener);
+					break;
+				case "Price":
+					choiceBox.getSelectionModel().selectedItemProperty().removeListener(choiceListener);
+					main.getChildren().removeAll(choiceBox, choiceField);
+					muchList.clear();
+					muchList.addAll("Greater than", "Less than");
+					choiceBox.getItems().clear();
+					choiceBox.getItems().addAll(muchList);
+					choiceBox.getSelectionModel().selectFirst();
+					choiceBox.setLayoutX(25);
+					choiceBox.setLayoutY(60);
+					choiceField.setPromptText(" Order amount (##.##)");
+					choiceField.setLayoutX(25);
+					choiceField.setLayoutY(95);
+					main.getChildren().addAll(choiceBox, choiceField);
+					break;
+				case "Order Number":
+					choiceBox.getSelectionModel().selectedItemProperty().removeListener(choiceListener);
+					main.getChildren().removeAll(choiceBox, choiceField);
+					choiceBox.getItems().clear();
+					orderNumberList.clear();
+					for (Order o : orderList) {
+						orderNumberList.addAll(o.getOrderNumber());
+					}
+					choiceBox.getItems().addAll(orderNumberList);
+					choiceBox.getSelectionModel().selectFirst();
+					choiceBox.setLayoutX(25);
+					choiceBox.setLayoutY(60);
+					main.getChildren().addAll(choiceBox);
+					break;
+				case "Table Number":
+					choiceBox.getSelectionModel().selectedItemProperty().removeListener(choiceListener);
+					main.getChildren().removeAll(choiceBox, choiceField);
+					choiceBox.getItems().clear();
+					tableList.clear();
+					tableList.addAll("1","2","3","4","5","6","7","8","9","10","11");
+					choiceBox.getItems().addAll(tableList);
+					choiceBox.getSelectionModel().selectFirst();
+					choiceBox.setLayoutX(25);
+					choiceBox.setLayoutY(60);
+					main.getChildren().addAll(choiceBox);
+					break;
+				}
+			}
+		});
+
+	}
+
+	public void search(ActionEvent event) throws Exception {
+		String query;
+		String[] splitQuery;
+		switch (searchByChoice) {
+		case "Time":
+			switch ((String) choiceBox.getSelectionModel().getSelectedItem()) {
+			case "Before":
+				searchedOrderList.clear();
+				query = choiceField.getText();
+				splitQuery = query.split(":");
+				for (Order o : orderList) {
+					String orderTime = o.getTimeOfOrder();
+					String[] splitOrderTime = orderTime.split(":");
+					if (Integer.valueOf(splitOrderTime[0]) <= Integer.valueOf(splitQuery[0])) {
+						if (Integer.valueOf(splitOrderTime[1]) < Integer.valueOf(splitQuery[1])) {
+							searchedOrderList.add(o);
+						}
+					}
+				}
+				break;
+			case "After":
+				searchedOrderList.clear();
+				query = choiceField.getText();
+				splitQuery = query.split(":");
+				for (Order o : orderList) {
+					String orderTime = o.getTimeOfOrder();
+					String[] splitOrderTime = orderTime.split(":");
+					if (Integer.valueOf(splitOrderTime[0]) >= Integer.valueOf(splitQuery[0])) {
+						if (Integer.valueOf(splitOrderTime[1]) > Integer.valueOf(splitQuery[1])) {
+							searchedOrderList.add(o);
+						}
+					}
+				}
+				break;
+			case "Between":
+				searchedOrderList.clear();
+				query = choiceField.getText();
+				splitQuery = query.split(" and ");
+				String[] lowerLimit = splitQuery[0].split(":");
+				String[] upperLimit = splitQuery[1].split(":");
+				for (Order o : orderList) {
+					String orderTime = o.getTimeOfOrder();
+					String[] splitOrderTime = orderTime.split(":");
+					if (Integer.valueOf(splitOrderTime[0]) >= Integer.valueOf(lowerLimit[0])
+							&& Integer.valueOf(splitOrderTime[0]) <= Integer.valueOf(upperLimit[0])) {
+						if (Integer.valueOf(splitOrderTime[1]) > Integer.valueOf(lowerLimit[1])
+								&& Integer.valueOf(splitOrderTime[1]) < Integer.valueOf(upperLimit[1])) {
+							searchedOrderList.add(o);
+						}
+					}
+				}
+				break;
+			}
+			break;
+		case "Price":
+			switch ((String) choiceBox.getSelectionModel().getSelectedItem()) {
+			case "Greater than":
+				searchedOrderList.clear();
+				query = choiceField.getText();
+				for (Order o : orderList) {
+					String orderTotal = o.getTotal();
+					if (Double.valueOf(orderTotal) > Double.valueOf(query)) {
+						searchedOrderList.add(o);
+					}
+				}
+				break;
+			case "Less than":
+				searchedOrderList.clear();
+				query = choiceField.getText();
+				for (Order o : orderList) {
+					String orderTotal = o.getTotal();
+					if (Double.valueOf(orderTotal) < Double.valueOf(query)) {
+						searchedOrderList.add(o);
+					}
+				}
+				break;
+			}
+			break;
+		case "Order Number":
+			searchedOrderList.clear();
+			query = (String) choiceBox.getSelectionModel().getSelectedItem();
+			for (Order o : orderList) {
+				String orderNumber = o.getOrderNumber();
+				if (orderNumber.equals(query)) {
+					searchedOrderList.add(o);
+					break;
+				}
+			}
+			break;
+		case "Table Number":
+			searchedOrderList.clear();
+			query = (String) choiceBox.getSelectionModel().getSelectedItem();
+			for (Order o : orderList) {
+				String tableNumber = o.getOrderNumber();
+				if (tableNumber.equals(query)) {
+					searchedOrderList.add(o);
+					break;
+				}
+			}
+			break;
+		}
+		
+		Stage search = (Stage) searchByComboBox.getScene().getWindow();
+		search.close();
+		Stage primaryStage = new Stage();
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("Order List.fxml"));
+		Parent root = loader.load();
+		Scene scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		primaryStage.setScene(scene);
+		primaryStage.show();
+		OrderListController controller = (OrderListController) loader.getController();
+		controller.populateList();
+		
+		for (Order o : searchedOrderList) {
+			System.out.println(o.getOrderNumber());
+		}
+	}
+
+	public void back(ActionEvent event) {
+
+	}
+}

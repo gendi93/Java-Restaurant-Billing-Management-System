@@ -1,0 +1,78 @@
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+
+public class Test {
+
+	public static void main(String[] a) {
+		JFrame frame = new JFrame();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		JLabel l = new JLabel("");
+		l.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+				displayMessage("You have selected: ", e);
+			}
+
+			public void focusLost(FocusEvent g) {
+				displayMessage2("You have selected: ", g);
+			}
+
+			void displayMessage(String prefix, FocusEvent e) {
+				l.setText(prefix + e.getComponent().getClass().getName());
+			}
+
+			void displayMessage2(String prefix, FocusEvent g) {
+				l.setText(prefix + g.getOppositeComponent().getClass().getName());
+			}
+		});
+
+		JButton b = new JButton("Click Me");
+		b.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+				displayMessage("You have selected: ", e);
+			}
+
+			public void focusLost(FocusEvent g) {
+				displayMessage2("You have selected: ", g);
+			}
+
+			void displayMessage(String prefix, FocusEvent e) {
+				l.setText(prefix + e.getComponent().getClass().getName());
+			}
+
+			void displayMessage2(String prefix, FocusEvent g) {
+				l.setText(prefix + g.getOppositeComponent().getClass().getName());
+			}
+		});
+
+		JTextField textField = new JTextField("A TextField");
+		textField.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+				displayMessage("You have selected: ", e);
+			}
+
+			public void focusLost(FocusEvent g) {
+				displayMessage2("You have selected: ", g);
+			}
+
+			void displayMessage(String prefix, FocusEvent e) {
+				l.setText(prefix + e.getComponent().getClass().getName());
+			}
+
+			void displayMessage2(String prefix, FocusEvent g) {
+				l.setText(prefix + g.getOppositeComponent().getClass().getName());
+			}
+		});
+		frame.add(textField, "North");
+		frame.add(new JTextField(), "South");
+		frame.add(b, "East");
+		frame.add(l, "West");
+		frame.setSize(300, 200);
+		frame.setVisible(true);
+	}
+}

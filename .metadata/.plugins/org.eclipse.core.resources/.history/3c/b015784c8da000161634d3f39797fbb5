@@ -1,0 +1,45 @@
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import javax.swing.JFrame;
+import javax.swing.JButton;
+import java.awt.BorderLayout;
+import javax.swing.JLabel;
+
+public class Focus extends JFrame implements FocusListener {
+	JLabel statusLabel;
+	public Focus() {
+		getContentPane().setLayout(null);
+
+		this.setSize(500, 500);
+
+		JButton btnBalls = new JButton("Balls");
+		btnBalls.setBounds(71, 127, 291, 174);
+		getContentPane().add(btnBalls);
+		
+		JLabel statusLabel = new JLabel("New label");
+		statusLabel.setBounds(106, 348, 217, 51);
+		getContentPane().add(statusLabel);
+		btnBalls.addFocusListener(new FocusListener() {
+
+			@Override
+			public void focusGained(FocusEvent e) {
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {
+			}
+		});
+	}
+	public static void main(String[] args) {
+		Focus f = new Focus();
+		f.setVisible(true);
+	}
+	@Override
+	public void focusGained(FocusEvent e) {
+		System.out.println("shit");
+	}
+	@Override
+	public void focusLost(FocusEvent e) {
+		System.out.println("balls");
+	}
+}

@@ -1,0 +1,100 @@
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+
+public class Focus extends JFrame implements FocusListener{
+	public Focus() {
+		JFrame frame = new JFrame();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setSize(500,300);
+		
+		JLabel l = new JLabel("");
+		l.setBounds(0, 20, 0, 121);
+		l.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+				displayMessage("You have selected: ", e);
+			}
+
+			public void focusLost(FocusEvent g) {
+				displayMessage2("You have selected: ", g);
+			}
+
+			void displayMessage(String prefix, FocusEvent e) {
+				l.setText(prefix + e.getComponent().getClass().getName());
+			}
+
+			void displayMessage2(String prefix, FocusEvent g) {
+				l.setText(prefix + g.getOppositeComponent().getClass().getName());
+			}
+		});
+
+		JButton b = new JButton("Click Me");
+		b.setBounds(213, 20, 71, 121);
+		b.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+				displayMessage("You have selected: ", e);
+			}
+
+			public void focusLost(FocusEvent g) {
+				displayMessage2("You have selected: ", g);
+			}
+
+			void displayMessage(String prefix, FocusEvent e) {
+				l.setText(prefix + e.getComponent().getClass().getName());
+			}
+
+			void displayMessage2(String prefix, FocusEvent g) {
+				l.setText(prefix + g.getOppositeComponent().getClass().getName());
+			}
+		});
+
+		JTextField textField = new JTextField("A TextField");
+		textField.setBounds(0, 0, 284, 20);
+		textField.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+				displayMessage("You have selected: ", e);
+			}
+
+			public void focusLost(FocusEvent g) {
+				displayMessage2("You have selected: ", g);
+			}
+
+			void displayMessage(String prefix, FocusEvent e) {
+				l.setText(prefix + e.getComponent().getClass().getName());
+			}
+
+			void displayMessage2(String prefix, FocusEvent g) {
+				l.setText(prefix + g.getOppositeComponent().getClass().getName());
+			}
+		});
+		frame.getContentPane().setLayout(null);
+		
+		frame.getContentPane().add(textField);
+		JTextField textField_1 = new JTextField();
+		textField_1.setBounds(0, 141, 284, 20);
+		frame.getContentPane().add(textField_1);
+		frame.getContentPane().add(b);
+		frame.getContentPane().add(l);
+		frame.setSize(300, 200);
+		frame.setVisible(true);
+	}
+	
+	public static void main(String[] a) {
+		Focus f = new Focus();
+	}
+
+	@Override
+	public void focusGained(FocusEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void focusLost(FocusEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+}

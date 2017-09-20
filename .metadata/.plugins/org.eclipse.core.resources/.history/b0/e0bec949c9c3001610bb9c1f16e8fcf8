@@ -1,0 +1,105 @@
+package application;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
+
+public class OrderListController {
+	@FXML
+	private VBox vBox;
+
+	static ObservableList<Order> searchedOrderList = FXCollections.observableArrayList();
+	static ObservableList<OrderItem> orderedItems = FXCollections.observableArrayList();
+
+	public void populateList(ObservableList<Order> searchedOrderList) {
+		for (Order o : searchedOrderList) {
+			System.out.println("balls");
+
+			AnchorPane a = new AnchorPane();
+			a.setMinWidth(200);
+			a.setMinHeight(200);
+			a.setLayoutX(0);
+			a.setLayoutY(0);
+
+			Label orderNumber = new Label();
+			orderNumber.setLayoutX(0);
+			orderNumber.setLayoutY(175);
+			orderNumber.setMinHeight(25);
+
+			Label totalPrice = new Label();
+			totalPrice.setLayoutX(0);
+			totalPrice.setLayoutY(175);
+			totalPrice.setMinHeight(25);
+
+			Label tableNumber = new Label();
+			totalPrice.setLayoutX(200);
+			totalPrice.setLayoutY(175);
+			totalPrice.setMinHeight(25);
+
+			try {
+				String file = "";
+				file = o.getFile();
+
+				orderNumber.setText(o.getOrderNumber());
+				tableNumber.setText("Table: " + o.getTableNumber());
+				totalPrice.setText(o.getTotal());
+				BufferedReader in = new BufferedReader(new FileReader(file));
+				String dataLine;
+				orderedItems.clear();
+				while ((dataLine = in.readLine()) != null) {
+					for (int i = 0; i < 3; i += 4) {
+						String[] dataValues = dataLine.split(",");
+						orderedItems.add(
+								new OrderItem(dataValues[i], dataValues[i + 1], dataValues[i + 2], dataValues[i + 3]));
+					}
+				}
+				in.close();
+			} catch (Exception e) {
+			}
+
+			TableView order = new TableView();
+			order.setLayoutX(0);
+			order.setLayoutY(0);
+			order.setMinWidth(535);
+			order.setMinHeight(175);
+
+			TableColumn orderItemCol = new TableColumn("Item");
+			orderItemCol.setMinWidth(100);
+			orderItemCol.setCellValueFactory(new PropertyValueFactory<OrderItem, String>("orderItem"));
+			orderItemCol.setCellFactory(TextFieldTableCell.forTableColumn());
+
+			TableColumn quantityCol = new TableColumn("Quantity");
+			quantityCol.setMinWidth(60);
+			quantityCol.setCellValueFactory(new PropertyValueFactory<OrderItem, String>("quantity"));
+			quantityCol.setCellFactory(TextFieldTableCell.forTableColumn());
+
+			TableColumn commentCol = new TableColumn("Special Request");
+			commentCol.setMinWidth(260);
+			commentCol.setCellValueFactory(new PropertyValueFactory<OrderItem, String>("comment"));
+			commentCol.setCellFactory(TextFieldTableCell.forTableColumn());
+
+			TableColumn priceCol = new TableColumn("Price");
+			priceCol.setMinWidth(45);
+			priceCol.setCellValueFactory(new PropertyValueFactory<OrderItem, String>("price"));
+			priceCol.setCellFactory(TextFieldTableCell.forTableColumn());
+
+			order.setItems(orderedItems);
+			order.getColumns().addAll(orderItemCol, quantityCol, commentCol, priceCol);
+
+			a.getChildren().addAll(order);
+			vBox.getChildren().add(a);
+		}
+
+	}
+
+}
