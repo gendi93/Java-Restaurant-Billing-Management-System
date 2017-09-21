@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="161.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.WelcomePageController">
+   <children>
+      <Button fx:id="employeeLogin" layoutX="120.0" layoutY="111.0" mnemonicParsing="false" onAction="#LoginPageWaiter" prefHeight="30.0" prefWidth="160.0" text="Employee Login" />
+      <Button fx:id="managerLogin" layoutX="120.0" layoutY="71.0" mnemonicParsing="false" onAction="#LoginPageManager" prefHeight="30.0" prefWidth="160.0" text="Manager Login" />
+      <Label layoutX="19.0" layoutY="14.0" text="GENDI BISTRO" textAlignment="CENTER" textFill="#280097">
+         <font>
+            <Font name="High Tower Text" size="48.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
